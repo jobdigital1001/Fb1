@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KI-Kennzeichnungs-Check – Müssen Sie KI-Inhalte kennzeichnen?</title>
+<meta name="description" content="Kostenloser Check in sechs Fragen: Welche Transparenzpflichten aus Artikel 50 der KI-Verordnung betreffen Ihre Website, Ihren Shop oder Ihre Inhalte?">
+<style>
+:root{--accent:#1f5eff;--ink:#14171f;--muted:#5b6472;--line:#d9dee7;--bg:#f6f7fa;--card:#fff;--ok:#1a7f4b;--warn:#a05a00;--must:#b3261e}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5;font-size:17px}
+main{max-width:680px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;line-height:1.2;margin:.4em 0 .3em;text-wrap:balance}
+h2{font-size:1.2rem;margin:1.4em 0 .5em}
+p{margin:.5em 0}
+.lead{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin:14px 0}
+.btn{display:inline-block;font:inherit;font-weight:600;border:2px solid var(--accent);background:var(--accent);color:#fff;border-radius:10px;padding:12px 18px;min-height:48px;cursor:pointer;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn:focus-visible,.opt:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #ffb300;outline-offset:2px}
+.opt{display:block;width:100%;text-align:left;font:inherit;background:#fff;border:2px solid var(--line);border-radius:10px;padding:14px;margin:8px 0;min-height:52px;cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.opt small{display:block;color:var(--muted)}
+.progress{font-size:.9rem;color:var(--muted)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.res{border-left:6px solid var(--line);padding:10px 14px;margin:12px 0;background:#fff;border-radius:0 10px 10px 0}
+.res.must{border-color:var(--must)}.res.rec{border-color:var(--warn)}.res.none{border-color:var(--ok)}
+.tag{display:inline-block;font-size:.8rem;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff}
+.must .tag{background:var(--must)}.rec .tag{background:var(--warn)}.none .tag{background:var(--ok)}
+.ref{font-size:.85rem;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+label{font-weight:600;display:block;margin:10px 0 4px}
+select,input[type=color]{font:inherit;padding:8px;border:2px solid var(--line);border-radius:8px;min-height:44px;background:#fff}
+.preview{display:flex;align-items:center;justify-content:center;min-height:110px;background:repeating-conic-gradient(#eef0f4 0 25%,#fff 0 50%) 0 0/20px 20px;border-radius:10px;border:1px solid var(--line)}
+.tiers{display:grid;gap:12px}
+@media(min-width:560px){.tiers{grid-template-columns:1fr 1fr}}
+.price{font-size:1.5rem;font-weight:700}
+ul{padding-left:1.2em;margin:.4em 0}
+footer{max-width:680px;margin:0 auto;padding:16px;font-size:.85rem;color:var(--muted);border-top:1px solid var(--line)}
+footer a{color:inherit}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:no-preference){.bar i{transition:width .2s}}
+@media print{
+  body{background:#fff;font-size:12pt}
+  .noprint,.btn,footer nav{display:none!important}
+  .card{border:0;padding:0}
+  main{padding:0}
+}
+</style>
+</head>
+<body>
+<main>
+  <section id="start">
+    <p class="progress">Kostenloser Check · 6 Fragen · ca. 2 Minuten</p>
+    <h1>Müssen Sie Ihre KI-Inhalte kennzeichnen?</h1>
+    <p class="lead">Seit dem 2. August 2026 gelten die Transparenzpflichten aus Artikel 50 der KI-Verordnung. Der Check zeigt, welche davon Ihre Website, Ihren Shop oder Ihre Inhalte betreffen.</p>
+    <div class="card">
+      <ul>
+        <li>Ergebnis je Anwendungsfall mit Fundstelle</li>
+        <li>Formulierungsvorschlag für jeden Hinweis</li>
+        <li>Läuft vollständig in Ihrem Browser</li>
+      </ul>
+      <p><button class="btn" id="go" type="button">Check starten</button></p>
+    </div>
+  </section>
+
+  <section id="quiz" hidden aria-live="polite">
+    <p class="progress" id="prog"></p>
+    <div class="bar" aria-hidden="true"><i id="bar" style="width:0"></i></div>
+    <h1 id="qtitle" tabindex="-1"></h1>
+    <p class="lead" id="qhelp"></p>
+    <div id="opts"></div>
+    <p><button class="btn ghost" id="back" type="button">Zurück</button></p>
+  </section>
+
+  <section id="result" hidden>
+    <p class="progress">Ihr Kennzeichnungs-Steckbrief · Stand: <span class="stand"></span></p>
+    <h1 tabindex="-1" id="rtitle">Ihr Ergebnis</h1>
+    <p class="lead" id="rsummary"></p>
+    <div id="rlist"></div>
+    <p class="noprint row">
+      <button class="btn ghost" type="button" id="print">Ergebnis drucken</button>
+      <button class="btn ghost" type="button" id="again">Neu starten</button>
+    </p>
+
+    <div class="card noprint">
+      <h2>Ihr Kennzeichen in der Vorschau</h2>
+      <div class="row">
+        <div><label for="ltext">Text</label>
+          <select id="ltext">
+            <option>KI-generiert</option><option>Mit KI erstellt</option><option>KI-unterstützt</option>
+            <option>AI-generated</option><option>Made with AI</option><option>AI-assisted</option>
+          </select></div>
+        <div><label for="lshape">Form</label>
+          <select id="lshape"><option value="pill">Rund</option><option value="square">Eckig</option></select></div>
+        <div><label for="lmode">Stil</label>
+          <select id="lmode"><option value="solid">Gefüllt</option><option value="outline">Kontur</option></select></div>
+        <div><label for="lcolor">Farbe</label><input type="color" id="lcolor" value="#1f5eff"></div>
+      </div>
+      <div class="preview" id="preview" role="img" aria-label="Vorschau des Kennzeichens"></div>
+      <p class="ref">Die Dateien zum Herunterladen sind Teil des Kits.</p>
+    </div>
+
+    <div class="card noprint">
+      <h2>In zehn Minuten umgesetzt: das KI-Kennzeichnungs-Kit</h2>
+      <ul>
+        <li>24 Kennzeichen als SVG und PNG, Deutsch und Englisch, hell und dunkel</li>
+        <li>Hinweistexte für Chatbots in drei Tonlagen</li>
+        <li>HTML-Bausteine für Shopify und WordPress</li>
+        <li>Teamregel auf einer Seite</li>
+        <li>Textvorlage für Ihre Seite „KI-Transparenz“</li>
+      </ul>
+      <div class="tiers">
+        <div class="card"><strong>Einzellizenz</strong><div class="price">39 €</div><p>Für ein Unternehmen oder eine Website.</p><a class="btn" href="CHECKOUT_URL_EINZEL">Kit kaufen</a></div>
+        <div class="card"><strong>Agenturlizenz</strong><div class="price">79 €</div><p>Für alle Kundenprojekte, mit Quelldatei.</p><a class="btn" href="CHECKOUT_URL_AGENTUR">Kit kaufen</a></div>
+      </div>
+      <p class="ref">Der Verkauf erfolgt über PLATTFORM. Vertragspartner, Rechnung und Widerrufsbelehrung: siehe Bestellseite. 14 Tage Geld-zurück ohne Begründung.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>Hinweis: Dieser Check ist eine Arbeitshilfe und ersetzt keine Rechtsberatung. Er gibt den Stand vom <span class="stand"></span> wieder. Die Verantwortung für die Einhaltung gesetzlicher Pflichten bleibt beim Nutzer. Fundstellen sind bei jedem Ergebnis angegeben, damit Sie alles selbst prüfen können.</p>
+  <p>Der Check läuft vollständig in Ihrem Browser. Ihre Eingaben werden nicht an uns übertragen und nicht gespeichert.</p>
+  <nav><a href="/impressum">Impressum</a> · <a href="/datenschutz">Datenschutz</a> · <a href="mailto:KONTAKT_EMAIL">Kontakt</a></nav>
+</footer>
+
+<script id="logic">
+/* ===== RULE DATA – review against the official text of Art. 50 Regulation (EU) 2024/1689
+   as amended by Regulation (EU) 2026/1744 before selling. Edit here only. ===== */
+var STAND = "16.11.2026";
+
+var QUESTIONS = [
+ {id:"role", title:"Wie setzen Sie KI ein?", help:"Die Pflichten unterscheiden zwischen Anbietern und Betreibern.",
+  opts:[["use","Wir nutzen KI-Tools anderer Hersteller","z. B. ChatGPT, Claude, Midjourney, ein Chatbot-Tool"],
+        ["offer","Wir bieten ein eigenes KI-System an","unter eigenem Namen oder eigener Marke"],
+        ["both","Beides",""],
+        ["private","Nur privat, nicht beruflich",""]]},
+ {id:"bot", title:"Spricht auf Ihrer Website eine KI direkt mit Menschen?", help:"Gemeint sind Chatbots, Voicebots und KI-Assistenten im Kundenkontakt.",
+  opts:[["yes","Ja",""],["no","Nein",""]]},
+ {id:"media", title:"Veröffentlichen Sie KI-erzeugte Bilder, Videos oder Audio?", help:"Wählen Sie die Antwort, die am weitesten reicht.",
+  opts:[["none","Nein",""],
+        ["artificial","Ja, erkennbar künstlich","z. B. Illustrationen, Grafiken, Icons"],
+        ["real","Ja, wirkt echt","zeigt Personen, Orte, Gegenstände oder Ereignisse täuschend echt"],
+        ["art","Ja, wirkt echt, ist aber erkennbar Kunst oder Satire",""]]},
+ {id:"text", title:"Veröffentlichen Sie KI-erzeugte Texte?", help:"",
+  opts:[["none","Nein",""],
+        ["marketing","Ja, Werbe-, Produkt- oder Blogtexte","ohne Informationsauftrag zu öffentlichen Themen"],
+        ["public","Ja, Texte zu Themen von öffentlichem Interesse","z. B. Nachrichten, Politik, Gesundheit, Verbraucherinformation"]]},
+ {id:"review", title:"Prüft ein Mensch KI-Texte vor der Veröffentlichung?", help:"Gemeint ist eine inhaltliche Prüfung mit benannter redaktioneller Verantwortung.",
+  opts:[["yes","Ja, immer",""],["no","Nein oder nicht immer",""]]},
+ {id:"bio", title:"Nutzen Sie Emotionserkennung oder biometrische Kategorisierung?", help:"Zum Beispiel Stimmungsanalyse per Kamera oder Stimme.",
+  opts:[["yes","Ja",""],["no","Nein",""]]}
+];
+
+/* level: must = Pflicht, rec = Empfehlung, none = keine Pflicht nach Art. 50 */
+function evaluate(a){
+  var r=[];
+  if(a.role==="private"){
+    r.push({level:"none",title:"Private Nutzung",text:"Die Betreiberpflichten gelten nicht für rein persönliche, nicht berufliche Tätigkeiten.",wording:"",ref:"Art. 2 Abs. 10 KI-VO"});
+    return r;
+  }
+  var provider=(a.role==="offer"||a.role==="both");
+  if(a.bot==="yes"){
+    if(provider) r.push({level:"must",title:"Chatbot oder Voicebot (als Anbieter)",text:"Ihr System muss so gestaltet sein, dass Menschen erfahren, dass sie mit einer KI interagieren. Ausnahme: Es ist aus den Umständen offensichtlich.",wording:"„Sie chatten mit einem KI-Assistenten.“",ref:"Art. 50 Abs. 1, Abs. 5 KI-VO"});
+    else r.push({level:"rec",title:"Chatbot oder Voicebot (als Betreiber)",text:"Die Pflicht trifft den Anbieter des Systems. Stellen Sie sicher, dass der Hinweis in Ihrer Einbindung sichtbar bleibt, spätestens bei der ersten Interaktion.",wording:"„Sie chatten mit einem KI-Assistenten.“",ref:"Art. 50 Abs. 1, Abs. 5 KI-VO"});
+  }
+  if(provider) r.push({level:"must",title:"Maschinenlesbare Markierung der Ausgaben (als Anbieter)",text:"Erzeugt Ihr System Audio, Bild, Video oder Text, müssen die Ausgaben maschinenlesbar als künstlich erzeugt erkennbar sein. Für Systeme, die vor dem 2. August 2026 auf dem Markt waren, läuft die Frist bis 2. Dezember 2026.",wording:"Technische Markierung, z. B. Metadaten oder Wasserzeichen.",ref:"Art. 50 Abs. 2 KI-VO, Übergangsfrist nach VO (EU) 2026/1744"});
+  if(a.media==="real") r.push({level:"must",title:"Echt wirkende KI-Bilder, -Videos oder -Audio",text:"Inhalte, die Personen, Orte, Gegenstände oder Ereignisse täuschend echt zeigen, können Deepfakes sein. Dann müssen Sie offenlegen, dass sie künstlich erzeugt oder verändert wurden.",wording:"„Dieses Bild wurde mit KI erzeugt.“",ref:"Art. 50 Abs. 4 UAbs. 1, Art. 3 Nr. 60 KI-VO"});
+  if(a.media==="art") r.push({level:"must",title:"Echt wirkende KI-Inhalte in Kunst oder Satire",text:"Die Pflicht ist eingeschränkt: Sie legen das Vorhandensein der erzeugten Inhalte so offen, dass Darstellung und Genuss des Werks nicht beeinträchtigt werden.",wording:"„Enthält KI-erzeugte Szenen.“ (z. B. im Abspann oder in der Beschreibung)",ref:"Art. 50 Abs. 4 UAbs. 1 Satz 3 KI-VO"});
+  if(a.media==="artificial") r.push({level:"rec",title:"Erkennbar künstliche KI-Bilder",text:"Art. 50 Abs. 4 verlangt die Offenlegung nur bei Deepfakes. Ein freiwilliger Hinweis schafft Vertrauen und beugt Streit über die Einordnung vor.",wording:"„Mit KI erstellt“",ref:"Art. 50 Abs. 4, Art. 3 Nr. 60 KI-VO"});
+  if(a.text==="public"){
+    if(a.review==="yes") r.push({level:"none",title:"KI-Texte zu öffentlichen Themen, menschlich geprüft",text:"Die Offenlegung entfällt, wenn die Texte menschlich überprüft oder redaktionell kontrolliert wurden und jemand die redaktionelle Verantwortung trägt. Halten Sie den Prüfablauf schriftlich fest.",wording:"",ref:"Art. 50 Abs. 4 UAbs. 2 KI-VO"});
+    else r.push({level:"must",title:"KI-Texte zu öffentlichen Themen ohne Prüfung",text:"Texte, die die Öffentlichkeit über Angelegenheiten von öffentlichem Interesse informieren sollen, müssen als künstlich erzeugt oder verändert offengelegt werden.",wording:"„Dieser Text wurde mit KI erstellt.“",ref:"Art. 50 Abs. 4 UAbs. 2 KI-VO"});
+  }
+  if(a.text==="marketing") r.push({level:a.review==="yes"?"none":"rec",title:"KI-Werbe-, Produkt- und Blogtexte",text:a.review==="yes"?"Für diese Texte sieht Art. 50 Abs. 4 keine Offenlegung vor. Prüfen Sie im Einzelfall, ob ein Text doch über öffentliche Angelegenheiten informieren soll.":"Für diese Texte sieht Art. 50 Abs. 4 keine Offenlegung vor. Ohne menschliche Prüfung empfiehlt sich ein Hinweis, weil die Abgrenzung zu öffentlichen Themen fließend ist.",wording:a.review==="yes"?"":"„Mit KI-Unterstützung erstellt“",ref:"Art. 50 Abs. 4 UAbs. 2 KI-VO"});
+  if(a.bio==="yes") r.push({level:"must",title:"Emotionserkennung oder biometrische Kategorisierung",text:"Sie müssen betroffene Personen über den Betrieb des Systems informieren. Prüfen Sie zusätzlich die Verbote in Art. 5 und die DSGVO.",wording:"„Hier wird ein System zur Emotionserkennung eingesetzt.“",ref:"Art. 50 Abs. 3 KI-VO"});
+  if(!r.length) r.push({level:"none",title:"Keine Transparenzpflicht erkannt",text:"Aus Ihren Antworten ergibt sich keine Pflicht nach Art. 50. Wiederholen Sie den Check, wenn sich Ihr KI-Einsatz ändert.",wording:"",ref:"Art. 50 KI-VO"});
+  return r;
+}
+
+function badgeSVG(text,shape,mode,color){
+  if(!/^#[0-9a-fA-F]{6}$/.test(color)) color="#1f5eff";
+  var w=Math.max(120,Math.round(text.length*10.2+56)),h=40,rx=shape==="pill"?20:6;
+  var solid=mode!=="outline",fg=solid?"#ffffff":color;
+  var esc=String(text).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]});
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc+'">'+
+    '<rect x="1" y="1" width="'+(w-2)+'" height="'+(h-2)+'" rx="'+rx+'" fill="'+(solid?color:"#ffffff")+'" stroke="'+color+'" stroke-width="2"/>'+
+    '<circle cx="22" cy="20" r="7" fill="none" stroke="'+fg+'" stroke-width="2"/><circle cx="22" cy="20" r="2.5" fill="'+fg+'"/>'+
+    '<text x="38" y="25" font-family="system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif" font-size="15" font-weight="600" fill="'+fg+'">'+esc+'</text></svg>';
+}
+if(typeof module!=="undefined") module.exports={evaluate:evaluate,badgeSVG:badgeSVG,QUESTIONS:QUESTIONS};
+</script>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var answers={},step=0,LABEL={must:"Pflicht",rec:"Empfehlung",none:"Keine Pflicht"};
+  Array.prototype.forEach.call(document.querySelectorAll(".stand"),function(e){e.textContent=STAND});
+
+  function activeQuestions(){
+    return QUESTIONS.filter(function(q){
+      if(answers.role==="private") return q.id==="role";
+      if(q.id==="review") return answers.text&&answers.text!=="none";
+      return true;
+    });
+  }
+  function show(id){["start","quiz","result"].forEach(function(s){$(s).hidden=(s!==id)});window.scrollTo(0,0)}
+  function render(){
+    var qs=activeQuestions();
+    if(step>=qs.length) return finish();
+    var q=qs[step];
+    $("prog").textContent="Frage "+(step+1)+" von "+qs.length;
+    $("bar").style.width=Math.round(step/qs.length*100)+"%";
+    $("qtitle").textContent=q.title;$("qhelp").textContent=q.help;
+    var box=$("opts");box.textContent="";
+    q.opts.forEach(function(o){
+      var b=document.createElement("button");b.type="button";b.className="opt";b.textContent=o[1];
+      if(o[2]){var s=document.createElement("small");s.textContent=o[2];b.appendChild(s)}
+      b.addEventListener("click",function(){answers[q.id]=o[0];step++;render()});
+      box.appendChild(b);
+    });
+    $("back").hidden=(step===0);
+    show("quiz");$("qtitle").focus();
+  }
+  function finish(){
+    var res=evaluate(answers),must=res.filter(function(r){return r.level==="must"}).length;
+    $("rsummary").textContent=must?("Aus Ihren Antworten ergeben sich "+must+" Pflicht"+(must>1?"en":"")+" nach Artikel 50."):"Aus Ihren Antworten ergibt sich keine Pflicht nach Artikel 50.";
+    var list=$("rlist");list.textContent="";
+    res.forEach(function(r){
+      var d=document.createElement("div");d.className="res "+r.level;
+      var t=document.createElement("span");t.className="tag";t.textContent=LABEL[r.level];
+      var h=document.createElement("h2");h.textContent=r.title;h.style.margin=".3em 0";
+      var p=document.createElement("p");p.textContent=r.text;
+      d.appendChild(t);d.appendChild(h);d.appendChild(p);
+      if(r.wording){var w=document.createElement("p");w.textContent="Formulierungsvorschlag: "+r.wording;d.appendChild(w)}
+      var f=document.createElement("p");f.className="ref";f.textContent="Fundstelle: "+r.ref;d.appendChild(f);
+      list.appendChild(d);
+    });
+    show("result");$("rtitle").focus();drawBadge();
+  }
+  function drawBadge(){
+    $("preview").innerHTML=badgeSVG($("ltext").value,$("lshape").value,$("lmode").value,$("lcolor").value);
+  }
+  $("go").addEventListener("click",function(){answers={};step=0;render()});
+  $("back").addEventListener("click",function(){if(step>0){step--;render()}});
+  $("again").addEventListener("click",function(){answers={};step=0;show("start")});
+  $("print").addEventListener("click",function(){window.print()});
+  ["ltext","lshape","lmode","lcolor"].forEach(function(id){$(id).addEventListener("input",drawBadge)});
+})();
+</script>
+</body>
+</html>
